@@ -6,7 +6,7 @@ DT Mini Browser (by DanlTech) is a *server-side rendered* browser for Android. I
 
 > 🇩🇪 **Language note:** The user interface is currently **German only**. English (and other languages) are planned. Translations are welcome!
 
-> ⚠️ **Early version (v0.5).** Expect rough edges.
+> ⚠️ **Early version (v0.6).** Expect rough edges.
 
 ---
 
