@@ -1,0 +1,10 @@
+# Android client (.gitignore)
+.gradle/
+build/
+local.properties
+.idea/
+*.iml
+captures/
+*.jks
+*.keystore
+release/
