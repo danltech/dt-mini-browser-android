@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- German translations -->
+<resources>
+    <!-- URL bar -->
+    <string name="hint_url">Adresse oder Suchbegriff</string>
+    <string name="hint_empty">Adresse oder Suchbegriff oben eingeben\n\nServer: %1$s</string>
+
+    <!-- Default browser prompt -->
+    <string name="default_browser_title">Standard-Browser</string>
+    <string name="default_browser_message">DanlMiniBrowser ist nicht als Standard-Browser eingestellt. Für Links aus anderen Apps empfohlen.</string>
+    <string name="dont_ask_again">Nicht mehr fragen</string>
+    <string name="later">Später</string>
+    <string name="toast_choose_default">Bitte in den Systemeinstellungen den Standard-Browser wählen</string>
+
+    <!-- Toasts / errors -->
+    <string name="no_app_for_link">Keine App für diesen Link: %1$s</string>
+    <string name="session_expired">Sitzung abgelaufen, lade neu</string>
+    <string name="server_unknown_request">Server kennt Anfrage nicht</string>
+    <string name="error_prefix">Fehler: %1$s</string>
+    <string name="no_page_loaded">Keine Seite geladen</string>
+    <string name="bookmark_saved">Lesezeichen gespeichert</string>
+    <string name="history_cleared">Verlauf gelöscht</string>
+    <string name="is_empty">%1$s ist leer</string>
+    <string name="hint_off">Hinweis aus</string>
+    <string name="hint_on">Hinweis an</string>
+    <string name="tab_n">Tab %1$d</string>
+
+    <!-- Download -->
+    <string name="download">Download</string>
+    <string name="save">Speichern</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="download_started">Download gestartet: %1$s</string>
+    <string name="download_failed">Download fehlgeschlagen: %1$s</string>
+    <string name="download_manager_unavailable">DownloadManager nicht verfügbar</string>
+
+    <!-- Certificate dialog -->
+    <string name="certificate">Zertifikat</string>
+    <string name="certificate_for">Zertifikat: %1$s</string>
+    <string name="conn_insecure">Verbindung ist nicht sicher (HTTP).\nEs wird kein Zertifikat verwendet.\n\nDaten können mitgelesen oder verändert werden.</string>
+    <string name="conn_secure">Verbindung ist verschlüsselt (HTTPS).\n\n</string>
+    <string name="issued_to">Ausgestellt für\n</string>
+    <string name="common_name">  Allgemeiner Name (CN)\n</string>
+    <string name="issued_by">Ausgestellt von\n</string>
+    <string name="validity">Gültigkeitsdauer\n</string>
+    <string name="issued_on">  Ausgestellt am\n    </string>
+    <string name="valid_until">  Gültig bis\n    </string>
+    <string name="protocol_label">Protokoll\n  </string>
+    <string name="cert_note">Hinweis: Fingerabdrücke und vollständige\nZertifikatskette liefert der Server aktuell\nnicht (Playwright-Begrenzung).</string>
+    <string name="em_dash">—</string>
+
+    <!-- Buttons -->
+    <string name="ok">OK</string>
+    <string name="send">Senden</string>
+    <string name="close">Schließen</string>
+    <string name="close_current">Aktuellen schließen</string>
+
+    <!-- Menu -->
+    <string name="new_tab">Neuer Tab</string>
+    <string name="tabs_count">Tabs (%1$d)</string>
+    <string name="reload">Neu laden</string>
+    <string name="back">Zurück</string>
+    <string name="add_bookmark">Lesezeichen setzen</string>
+    <string name="bookmarks">Lesezeichen</string>
+    <string name="history">Verlauf</string>
+    <string name="settings">Einstellungen</string>
+    <string name="debug_overlay">Debug-Overlay</string>
+    <string name="server_address">Server-Adresse</string>
+    <string name="tabs">Tabs</string>
+    <string name="empty_tab">Leerer Tab</string>
+    <string name="clear_history">Verlauf löschen</string>
+
+    <!-- Settings items -->
+    <string name="default_browser_yes">Standard-Browser: ja</string>
+    <string name="set_as_default">Als Standard-Browser einrichten…</string>
+    <string name="default_hint_on">Hinweis Standard-Browser: an (tippen zum Umschalten)</string>
+    <string name="default_hint_off">Hinweis Standard-Browser: aus (tippen zum Umschalten)</string>
+</resources>

@@ -66,9 +66,16 @@ Like any server-side rendering browser, **the server sees everything you browse*
 - Bookmarks and history stay on your device (SharedPreferences, no backup).
 - The app requests only `INTERNET` (and `WRITE_EXTERNAL_STORAGE` on Android 9 and below for downloads).
 
+## Localization / translations
+
+- Default (fallback): **English** (`res/values/strings.xml`)
+- German: `res/values-de/strings.xml`
+- The client sends `lang=` (device language) to the server so error messages match.
+- To add a language: copy `values/strings.xml` to `values-xx/`, translate, open a **pull request**.
+
 ## Roadmap
 
-- [ ] English UI / localization
+- [x] English UI / localization (EN + DE)
 - [ ] Authentication between app and server
 - [ ] HTTPS-first server connection
 - [ ] Better layout for complex pages
@@ -77,6 +84,8 @@ Like any server-side rendering browser, **the server sees everything you browse*
 ## Contributing
 
 Issues and pull requests are welcome. Please open an issue first for larger changes.
+
+**Translations:** new languages via PR are especially welcome — only `strings.xml` (and optionally server `i18n.py`) need changing.
 
 ## License
 

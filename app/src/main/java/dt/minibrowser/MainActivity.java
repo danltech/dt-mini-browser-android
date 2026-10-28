@@ -94,7 +94,7 @@ public class MainActivity extends Activity implements PageView.Listener {
         super.onCreate(b);
         density = getResources().getDisplayMetrics().density;
         prefs = getSharedPreferences("mini", MODE_PRIVATE);
-        server = prefs.getString("server", "http://phonebrowserproxy.danl:8080");
+        server = prefs.getString("server", "http://192.168.0.52:8080");
         clientId = prefs.getString("clientId", null);
         if (clientId == null) {
             clientId = UUID.randomUUID().toString();
@@ -114,7 +114,7 @@ public class MainActivity extends Activity implements PageView.Listener {
 
         urlField = new EditText(this);
         urlField.setSingleLine(true);
-        urlField.setHint("Adresse oder Suchbegriff");
+        urlField.setHint(getString(R.string.hint_url));
         urlField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI);
         urlField.setImeOptions(EditorInfo.IME_ACTION_GO);
         urlField.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -196,9 +196,9 @@ public class MainActivity extends Activity implements PageView.Listener {
         if (isDefaultBrowser()) return;
         if (prefs.getBoolean("skip_default_prompt", false)) return;
         new AlertDialog.Builder(this)
-                .setTitle("Standard-Browser")
-                .setMessage("DanlMiniBrowser ist nicht als Standard-Browser eingestellt. Für Links aus anderen Apps empfohlen.")
-                .setPositiveButton("Einstellungen", new DialogInterface.OnClickListener() {
+                .setTitle(R.string.default_browser_title)
+                .setMessage(R.string.default_browser_message)
+                .setPositiveButton(R.string.settings, new DialogInterface.OnClickListener() {
                     @Override public void onClick(DialogInterface d, int w) {
                         try {
                             startActivity(new Intent(Settings.ACTION_MANAGE_APPLICATIONS_SETTINGS));
@@ -206,25 +206,33 @@ public class MainActivity extends Activity implements PageView.Listener {
                             try {
                                 startActivity(new Intent(Settings.ACTION_SETTINGS));
                             } catch (Exception e2) {
-                                Toast.makeText(MainActivity.this, "Bitte in den Systemeinstellungen den Standard-Browser wählen", Toast.LENGTH_LONG).show();
+                                Toast.makeText(MainActivity.this, R.string.toast_choose_default, Toast.LENGTH_LONG).show();
                             }
                         }
                     }
                 })
-                .setNeutralButton("Nicht mehr fragen", new DialogInterface.OnClickListener() {
+                .setNeutralButton(R.string.dont_ask_again, new DialogInterface.OnClickListener() {
                     @Override public void onClick(DialogInterface d, int w) {
                         prefs.edit().putBoolean("skip_default_prompt", true).apply();
                     }
                 })
-                .setNegativeButton("Später", null)
+                .setNegativeButton(R.string.later, null)
                 .show();
+    }
+
+    /** BCP-47 / ISO language code for the server (en fallback, de when German). */
+    private String clientLang() {
+        Locale loc = Locale.getDefault();
+        String lang = loc != null ? loc.getLanguage() : "en";
+        if (lang == null || lang.length() == 0) return "en";
+        return lang.toLowerCase(Locale.US);
     }
 
     private void applyServer() {
         if (!server.startsWith("http")) server = "http://" + server;
         while (server.endsWith("/")) server = server.substring(0, server.length() - 1);
         pv.setServerBase(server);
-        pv.setHint("Adresse oder Suchbegriff oben eingeben\n\nServer: " + server);
+        pv.setHint(getString(R.string.hint_empty, server));
     }
 
     // ------------------------------------------------------------------ Aktionen
@@ -244,7 +252,8 @@ public class MainActivity extends Activity implements PageView.Listener {
         String path = "/load?url=" + Net.enc(input) + "&w=" + w + "&h=" + h + "&dpr=" + density
                 + "&cid=" + Net.enc(clientId)
                 + "&av=" + Net.enc(androidVer)
-                + "&model=" + Net.enc(deviceModel);
+                + "&model=" + Net.enc(deviceModel)
+                + "&lang=" + Net.enc(clientLang());
         if (sid != null) path += "&sid=" + Net.enc(sid);
         request(path, LOAD);
     }
@@ -258,7 +267,8 @@ public class MainActivity extends Activity implements PageView.Listener {
             return;
         }
         String path = "/tap?sid=" + Net.enc(sid) + "&cid=" + Net.enc(clientId)
-                + "&x=" + Math.round(x) + "&y=" + Math.round(y);
+                + "&x=" + Math.round(x) + "&y=" + Math.round(y)
+                + "&lang=" + Net.enc(clientLang());
         if (href != null && href.length() > 0) {
             path += "&href=" + Net.enc(href);
         }
@@ -279,20 +289,21 @@ public class MainActivity extends Activity implements PageView.Listener {
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(i);
         } catch (Exception e) {
-            Toast.makeText(this, "Keine App für diesen Link: " + url, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.no_app_for_link, url), Toast.LENGTH_LONG).show();
         }
     }
 
     private void sendText(String text, boolean enter) {
         if (sid == null) return;
         request("/type?sid=" + Net.enc(sid) + "&cid=" + Net.enc(clientId)
-                + "&t=" + Net.enc(text) + (enter ? "&enter=1" : ""), TYPE);
+                + "&t=" + Net.enc(text) + (enter ? "&enter=1" : "")
+                + "&lang=" + Net.enc(clientLang()), TYPE);
     }
 
     @Override
     public void onBackPressed() {
         if (depth > 0 && sid != null) {
-            request("/back?sid=" + Net.enc(sid) + "&cid=" + Net.enc(clientId), BACK);
+            request("/back?sid=" + Net.enc(sid) + "&cid=" + Net.enc(clientId) + "&lang=" + Net.enc(clientLang()), BACK);
         } else {
             super.onBackPressed();
         }
@@ -339,7 +350,7 @@ public class MainActivity extends Activity implements PageView.Listener {
                         busy = false;
                         pv.setLoading(false);
                         if (fns && kind != LOAD) {
-                            Toast.makeText(MainActivity.this, "Sitzung abgelaufen, lade neu", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, R.string.session_expired, Toast.LENGTH_SHORT).show();
                             sid = null;
                             Page cur = pv.getPage();
                             if (cur != null && cur.url.length() > 0) load(cur.url);
@@ -347,7 +358,8 @@ public class MainActivity extends Activity implements PageView.Listener {
                             apply(fp, kind);
                         } else {
                             Toast.makeText(MainActivity.this,
-                                    fns ? "Server kennt Anfrage nicht" : "Fehler: " + ferr, Toast.LENGTH_LONG).show();
+                                    fns ? getString(R.string.server_unknown_request)
+                                            : getString(R.string.error_prefix, ferr), Toast.LENGTH_LONG).show();
                         }
                     }
                 });
@@ -409,15 +421,15 @@ public class MainActivity extends Activity implements PageView.Listener {
         }
 
         new AlertDialog.Builder(this)
-                .setTitle("Download")
+                .setTitle(R.string.download)
                 .setMessage(msg)
-                .setPositiveButton("Speichern", new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         enqueueDownload(url, name);
                     }
                 })
-                .setNegativeButton("Abbrechen", null)
+                .setNegativeButton(R.string.cancel, null)
                 .show();
     }
 
@@ -425,7 +437,7 @@ public class MainActivity extends Activity implements PageView.Listener {
         try {
             DownloadManager dm = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
             if (dm == null) {
-                Toast.makeText(this, "DownloadManager nicht verfügbar", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.download_manager_unavailable, Toast.LENGTH_SHORT).show();
                 return;
             }
             // Dateiname bereinigen
@@ -447,11 +459,11 @@ public class MainActivity extends Activity implements PageView.Listener {
             String mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(ext);
             if (mime != null) req.setMimeType(mime);
             long id = dm.enqueue(req);
-            Toast.makeText(this, "Download gestartet: " + safe, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.download_started, safe), Toast.LENGTH_SHORT).show();
             Log.d(TAG, "Download enqueued id=" + id + " url=" + url);
         } catch (Exception e) {
             Log.e(TAG, "Download fehlgeschlagen", e);
-            Toast.makeText(this, "Download fehlgeschlagen: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.download_failed, e.getMessage()), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -480,58 +492,56 @@ public class MainActivity extends Activity implements PageView.Listener {
     private void showCertDialog() {
         Page p = pv.getPage();
         if (p == null) {
-            Toast.makeText(this, "Keine Seite geladen", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.no_page_loaded, Toast.LENGTH_SHORT).show();
             return;
         }
 
-        String title = "Zertifikat";
-        if (p.certSubject.length() > 0) title = "Zertifikat: " + p.certSubject;
+        String title = getString(R.string.certificate);
+        if (p.certSubject.length() > 0) title = getString(R.string.certificate_for, p.certSubject);
         else if (p.url.length() > 0) {
             try {
                 java.net.URI u = java.net.URI.create(p.url);
-                title = "Zertifikat: " + (u.getHost() != null ? u.getHost() : p.url);
+                title = getString(R.string.certificate_for, u.getHost() != null ? u.getHost() : p.url);
             } catch (Exception e) {
-                title = "Zertifikat";
+                title = getString(R.string.certificate);
             }
         }
 
+        String dash = getString(R.string.em_dash);
         StringBuilder sb = new StringBuilder();
         if (!p.https) {
-            sb.append("Verbindung ist nicht sicher (HTTP).\n");
-            sb.append("Es wird kein Zertifikat verwendet.\n\n");
-            sb.append("Daten können mitgelesen oder verändert werden.");
+            sb.append(getString(R.string.conn_insecure));
         } else {
-            sb.append("Verbindung ist verschlüsselt (HTTPS).\n\n");
+            sb.append(getString(R.string.conn_secure));
 
-            sb.append("Ausgestellt für\n");
-            sb.append("  Allgemeiner Name (CN)\n");
-            sb.append("    ").append(p.certSubject.length() > 0 ? p.certSubject : "—").append("\n\n");
+            sb.append(getString(R.string.issued_to));
+            sb.append(getString(R.string.common_name));
+            sb.append("    ").append(p.certSubject.length() > 0 ? p.certSubject : dash).append("\n\n");
 
-            sb.append("Ausgestellt von\n");
-            sb.append("  Allgemeiner Name (CN)\n");
-            sb.append("    ").append(p.certIssuer.length() > 0 ? p.certIssuer : "—").append("\n\n");
+            sb.append(getString(R.string.issued_by));
+            sb.append(getString(R.string.common_name));
+            sb.append("    ").append(p.certIssuer.length() > 0 ? p.certIssuer : dash).append("\n\n");
 
-            sb.append("Gültigkeitsdauer\n");
-            SimpleDateFormat df = new SimpleDateFormat("EEEE, d. MMMM yyyy 'um' HH:mm:ss", Locale.GERMAN);
+            sb.append(getString(R.string.validity));
+            Locale loc = Locale.getDefault();
+            SimpleDateFormat df = new SimpleDateFormat("EEEE, d. MMMM yyyy HH:mm:ss", loc);
             if (p.certValidFrom > 0) {
-                sb.append("  Ausgestellt am\n    ").append(df.format(new Date(p.certValidFrom * 1000L))).append("\n");
+                sb.append(getString(R.string.issued_on)).append(df.format(new Date(p.certValidFrom * 1000L))).append("\n");
             } else {
-                sb.append("  Ausgestellt am\n    —\n");
+                sb.append(getString(R.string.issued_on)).append(dash).append("\n");
             }
             if (p.certValidTo > 0) {
-                sb.append("  Gültig bis\n    ").append(df.format(new Date(p.certValidTo * 1000L))).append("\n");
+                sb.append(getString(R.string.valid_until)).append(df.format(new Date(p.certValidTo * 1000L))).append("\n");
             } else {
-                sb.append("  Gültig bis\n    —\n");
+                sb.append(getString(R.string.valid_until)).append(dash).append("\n");
             }
             sb.append("\n");
 
             if (p.certProtocol.length() > 0) {
-                sb.append("Protokoll\n  ").append(p.certProtocol).append("\n\n");
+                sb.append(getString(R.string.protocol_label)).append(p.certProtocol).append("\n\n");
             }
 
-            sb.append("Hinweis: Fingerabdrücke und vollständige\n");
-            sb.append("Zertifikatskette liefert der Server aktuell\n");
-            sb.append("nicht (Playwright-Begrenzung).");
+            sb.append(getString(R.string.cert_note));
         }
 
         TextView tv = new TextView(this);
@@ -547,7 +557,7 @@ public class MainActivity extends Activity implements PageView.Listener {
         new AlertDialog.Builder(this)
                 .setTitle(title)
                 .setView(sv)
-                .setPositiveButton("OK", null)
+                .setPositiveButton(R.string.ok, null)
                 .show();
     }
 
@@ -569,19 +579,19 @@ public class MainActivity extends Activity implements PageView.Listener {
         et.selectAll();
         AlertDialog d = new AlertDialog.Builder(this)
                 .setView(et)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dlg, int w) {
                         sendText(et.getText().toString(), false);
                     }
                 })
-                .setNeutralButton("Senden", new DialogInterface.OnClickListener() {
+                .setNeutralButton(R.string.send, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dlg, int w) {
                         sendText(et.getText().toString(), true);
                     }
                 })
-                .setNegativeButton("Abbrechen", null)
+                .setNegativeButton(R.string.cancel, null)
                 .create();
         d.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         d.show();
@@ -592,16 +602,16 @@ public class MainActivity extends Activity implements PageView.Listener {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add(0, M_NEW_TAB, 0, "Neuer Tab");
-        menu.add(0, M_TABS, 1, "Tabs (" + tabs.size() + ")");
-        menu.add(0, M_RELOAD, 2, "Neu laden");
-        menu.add(0, M_BACK, 3, "Zurück");
-        menu.add(0, M_BOOKMARK, 4, "Lesezeichen setzen");
-        menu.add(0, M_BOOKMARKS, 5, "Lesezeichen");
-        menu.add(0, M_HISTORY, 6, "Verlauf");
-        menu.add(0, M_SETTINGS, 7, "Einstellungen");
-        menu.add(0, M_DEBUG, 8, "Debug-Overlay").setCheckable(true).setChecked(pv.isDebug());
-        menu.add(0, M_SERVER, 9, "Server-Adresse");
+        menu.add(0, M_NEW_TAB, 0, R.string.new_tab);
+        menu.add(0, M_TABS, 1, getString(R.string.tabs_count, tabs.size()));
+        menu.add(0, M_RELOAD, 2, R.string.reload);
+        menu.add(0, M_BACK, 3, R.string.back);
+        menu.add(0, M_BOOKMARK, 4, R.string.add_bookmark);
+        menu.add(0, M_BOOKMARKS, 5, R.string.bookmarks);
+        menu.add(0, M_HISTORY, 6, R.string.history);
+        menu.add(0, M_SETTINGS, 7, R.string.settings);
+        menu.add(0, M_DEBUG, 8, R.string.debug_overlay).setCheckable(true).setChecked(pv.isDebug());
+        menu.add(0, M_SERVER, 9, R.string.server_address);
         return true;
     }
 
@@ -626,9 +636,9 @@ public class MainActivity extends Activity implements PageView.Listener {
                 et.setText(server);
                 et.setSingleLine(true);
                 new AlertDialog.Builder(this)
-                        .setTitle("Server-Adresse")
+                        .setTitle(R.string.server_address)
                         .setView(et)
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface d, int w) {
                                 server = et.getText().toString().trim();
@@ -636,7 +646,7 @@ public class MainActivity extends Activity implements PageView.Listener {
                                 applyServer();
                             }
                         })
-                        .setNegativeButton("Abbrechen", null)
+                        .setNegativeButton(R.string.cancel, null)
                         .show();
                 return true;
             }
@@ -644,15 +654,15 @@ public class MainActivity extends Activity implements PageView.Listener {
                 Page cur = pv.getPage();
                 if (cur != null && cur.url.length() > 0) {
                     store.addBookmark(cur.url, cur.title);
-                    Toast.makeText(this, "Lesezeichen gespeichert", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.bookmark_saved, Toast.LENGTH_SHORT).show();
                 }
                 return true;
             }
             case M_BOOKMARKS:
-                showEntryList("Lesezeichen", store.getBookmarks(), true);
+                showEntryList(getString(R.string.bookmarks), store.getBookmarks(), true);
                 return true;
             case M_HISTORY:
-                showEntryList("Verlauf", store.getHistory(), false);
+                showEntryList(getString(R.string.history), store.getHistory(), false);
                 return true;
             case M_NEW_TAB:
                 newTab();
@@ -678,7 +688,7 @@ public class MainActivity extends Activity implements PageView.Listener {
         pv.setPage(null, false);
         urlField.setText("");
         updateLock(null);
-        Toast.makeText(this, "Tab " + tabs.size(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.tab_n, tabs.size()), Toast.LENGTH_SHORT).show();
         invalidateOptionsMenu();
     }
 
@@ -721,25 +731,25 @@ public class MainActivity extends Activity implements PageView.Listener {
         String[] labels = new String[n];
         for (int i = 0; i < n; i++) {
             Tab tb = tabs.get(i);
-            String t = (tb.title != null && tb.title.length() > 0) ? tb.title : (tb.url.length() > 0 ? tb.url : "Leerer Tab");
+            String t = (tb.title != null && tb.title.length() > 0) ? tb.title : (tb.url.length() > 0 ? tb.url : getString(R.string.empty_tab));
             if (t.length() > 40) t = t.substring(0, 37) + "...";
             labels[i] = (i == tabIndex ? "• " : "  ") + t;
         }
         new AlertDialog.Builder(this)
-                .setTitle("Tabs")
+                .setTitle(R.string.tabs)
                 .setItems(labels, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface d, int which) {
                         switchTab(which);
                     }
                 })
-                .setNeutralButton("Aktuellen schließen", new DialogInterface.OnClickListener() {
+                .setNeutralButton(R.string.close_current, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface d, int which) {
                         closeCurrentTab();
                     }
                 })
-                .setNegativeButton("Schließen", null)
+                .setNegativeButton(R.string.close, null)
                 .show();
     }
 
@@ -773,7 +783,7 @@ public class MainActivity extends Activity implements PageView.Listener {
 
     private void showEntryList(String title, final java.util.List<Store.Entry> entries, final boolean bookmarks) {
         if (entries.isEmpty()) {
-            Toast.makeText(this, title + " ist leer", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.is_empty, title), Toast.LENGTH_SHORT).show();
             return;
         }
         String[] labels = new String[entries.size()];
@@ -791,13 +801,13 @@ public class MainActivity extends Activity implements PageView.Listener {
                         load(entries.get(which).url);
                     }
                 })
-                .setNegativeButton("Schließen", null);
+                .setNegativeButton(R.string.close, null);
         if (!bookmarks) {
-            b.setNeutralButton("Verlauf löschen", new DialogInterface.OnClickListener() {
+            b.setNeutralButton(R.string.clear_history, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface d, int which) {
                     store.clearHistory();
-                    Toast.makeText(MainActivity.this, "Verlauf gelöscht", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, R.string.history_cleared, Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -805,13 +815,14 @@ public class MainActivity extends Activity implements PageView.Listener {
     }
 
     private void showSettings() {
+        boolean skipHint = prefs.getBoolean("skip_default_prompt", false);
         String[] items = new String[] {
-                isDefaultBrowser() ? "Standard-Browser: ja" : "Als Standard-Browser einrichten…",
-                "Verlauf löschen",
-                "Hinweis Standard-Browser: " + (prefs.getBoolean("skip_default_prompt", false) ? "aus" : "an") + " (tippen zum Umschalten)"
+                isDefaultBrowser() ? getString(R.string.default_browser_yes) : getString(R.string.set_as_default),
+                getString(R.string.clear_history),
+                skipHint ? getString(R.string.default_hint_off) : getString(R.string.default_hint_on)
         };
         new AlertDialog.Builder(this)
-                .setTitle("Einstellungen")
+                .setTitle(R.string.settings)
                 .setItems(items, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface d, int which) {
@@ -822,15 +833,15 @@ public class MainActivity extends Activity implements PageView.Listener {
                             } catch (Exception e) {}
                         } else if (which == 1) {
                             store.clearHistory();
-                            Toast.makeText(MainActivity.this, "Verlauf gelöscht", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, R.string.history_cleared, Toast.LENGTH_SHORT).show();
                         } else if (which == 2) {
                             boolean skip = prefs.getBoolean("skip_default_prompt", false);
                             prefs.edit().putBoolean("skip_default_prompt", !skip).apply();
-                            Toast.makeText(MainActivity.this, !skip ? "Hinweis aus" : "Hinweis an", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, !skip ? R.string.hint_off : R.string.hint_on, Toast.LENGTH_SHORT).show();
                         }
                     }
                 })
-                .setNegativeButton("Schließen", null)
+                .setNegativeButton(R.string.close, null)
                 .show();
     }
 

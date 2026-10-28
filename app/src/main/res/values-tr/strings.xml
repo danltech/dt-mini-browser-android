@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Made by ChatGPT – May contain errors -->
+<resources>
+  <string name="app_name" translatable="false">DT Mini Browser</string>
+  <string name="hint_url">Adres veya arama terimi</string>
+  <string name="hint_empty">Yukarıya bir adres veya arama terimi girin\n\nSunucu: %1$s</string>
+  <string name="default_browser_title">Varsayılan tarayıcı</string>
+  <string name="default_browser_message">DanlMiniBrowser varsayılan tarayıcı olarak ayarlanmadı. Diğer uygulamalardan gelen bağlantılar için önerilir.</string>
+  <string name="dont_ask_again">Bir daha sorma</string>
+  <string name="later">Daha sonra</string>
+  <string name="toast_choose_default">Lütfen sistem ayarlarından varsayılan tarayıcıyı seçin</string>
+  <string name="no_app_for_link">Bu bağlantı için uygulama yok: %1$s</string>
+  <string name="session_expired">Oturumun süresi doldu, yeniden yükleniyor</string>
+  <string name="server_unknown_request">Sunucu bu isteği tanımıyor</string>
+  <string name="error_prefix">Hata: %1$s</string>
+  <string name="no_page_loaded">Henüz sayfa yüklenmedi</string>
+  <string name="bookmark_saved">Yer imi kaydedildi</string>
+  <string name="history_cleared">Geçmiş temizlendi</string>
+  <string name="is_empty">%1$s boş</string>
+  <string name="hint_off">İpucu kapalı</string>
+  <string name="hint_on">İpucu açık</string>
+  <string name="tab_n">Sekme %1$d</string>
+  <string name="download">İndir</string>
+  <string name="save">Kaydet</string>
+  <string name="cancel">İptal</string>
+  <string name="download_started">İndirme başladı: %1$s</string>
+  <string name="download_failed">İndirme başarısız: %1$s</string>
+  <string name="download_manager_unavailable">DownloadManager kullanılamıyor</string>
+  <string name="certificate">Sertifika</string>
+  <string name="certificate_for">Sertifika: %1$s</string>
+  <string name="conn_insecure">Bağlantı güvenli değil (HTTP).\nHerhangi bir sertifika kullanılmıyor.\n\nBaşkaları verileri okuyabilir veya değiştirebilir.</string>
+  <string name="conn_secure">Bağlantı şifrelenmiş (HTTPS).\n\n</string>
+  <string name="issued_to">Şunun için verildi\n</string>
+  <string name="common_name">  Genel Ad (CN)\n</string>
+  <string name="issued_by">Veren\n</string>
+  <string name="validity">Geçerlilik süresi\n</string>
+  <string name="issued_on">  Veriliş tarihi\n    </string>
+  <string name="valid_until">  Son geçerlilik tarihi\n    </string>
+  <string name="protocol_label">Protokol\n  </string>
+  <string name="cert_note">Not: Parmak izleri ve tam sertifika zinciri,\nPlaywright sınırlaması nedeniyle şu anda sunucu\ntarafından sağlanmıyor.</string>
+  <string name="em_dash">—</string>
+  <string name="ok">Tamam</string>
+  <string name="send">Gönder</string>
+  <string name="close">Kapat</string>
+  <string name="close_current">Geçerli sekmeyi kapat</string>
+  <string name="new_tab">Yeni sekme</string>
+  <string name="tabs_count">Sekmeler (%1$d)</string>
+  <string name="reload">Yenile</string>
+  <string name="back">Geri</string>
+  <string name="add_bookmark">Yer imi ekle</string>
+  <string name="bookmarks">Yer imleri</string>
+  <string name="history">Geçmiş</string>
+  <string name="settings">Ayarlar</string>
+  <string name="debug_overlay">Hata ayıklama katmanı</string>
+  <string name="server_address">Sunucu adresi</string>
+  <string name="tabs">Sekmeler</string>
+  <string name="empty_tab">Boş sekme</string>
+  <string name="clear_history">Geçmişi temizle</string>
+  <string name="default_browser_yes">Varsayılan tarayıcı: evet</string>
+  <string name="set_as_default">Varsayılan tarayıcı olarak ayarla…</string>
+  <string name="default_hint_on">Varsayılan tarayıcı uyarısı: açık (değiştirmek için dokunun)</string>
+  <string name="default_hint_off">Varsayılan tarayıcı uyarısı: kapalı (değiştirmek için dokunun)</string>
+</resources>

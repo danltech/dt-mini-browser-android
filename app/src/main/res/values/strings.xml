@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Default / fallback language: English -->
+<resources>
+  <string name="app_name" translatable="false">DT Mini Browser</string>
+
+  <!-- URL bar -->
+  <string name="hint_url">Address or search term</string>
+  <string name="hint_empty">Enter address or search term above\n\nServer: %1$s</string>
+
+  <!-- Default browser prompt -->
+  <string name="default_browser_title">Default browser</string>
+  <string name="default_browser_message">DanlMiniBrowser is not set as the default browser. Recommended for links from other apps.</string>
+  <string name="dont_ask_again">Don\'t ask again</string>
+  <string name="later">Later</string>
+  <string name="toast_choose_default">Please choose the default browser in system settings</string>
+
+  <!-- Toasts / errors -->
+  <string name="no_app_for_link">No app for this link: %1$s</string>
+  <string name="session_expired">Session expired, reloading</string>
+  <string name="server_unknown_request">Server does not know this request</string>
+  <string name="error_prefix">Error: %1$s</string>
+  <string name="no_page_loaded">No page loaded</string>
+  <string name="bookmark_saved">Bookmark saved</string>
+  <string name="history_cleared">History cleared</string>
+  <string name="is_empty">%1$s is empty</string>
+  <string name="hint_off">Hint off</string>
+  <string name="hint_on">Hint on</string>
+  <string name="tab_n">Tab %1$d</string>
+
+  <!-- Download -->
+  <string name="download">Download</string>
+  <string name="save">Save</string>
+  <string name="cancel">Cancel</string>
+  <string name="download_started">Download started: %1$s</string>
+  <string name="download_failed">Download failed: %1$s</string>
+  <string name="download_manager_unavailable">DownloadManager not available</string>
+
+  <!-- Certificate dialog -->
+  <string name="certificate">Certificate</string>
+  <string name="certificate_for">Certificate: %1$s</string>
+  <string name="conn_insecure">Connection is not secure (HTTP).\nNo certificate is used.\n\nData can be read or modified by others.</string>
+  <string name="conn_secure">Connection is encrypted (HTTPS).\n\n</string>
+  <string name="issued_to">Issued to\n</string>
+  <string name="common_name">  Common Name (CN)\n</string>
+  <string name="issued_by">Issued by\n</string>
+  <string name="validity">Validity period\n</string>
+  <string name="issued_on">  Issued on\n    </string>
+  <string name="valid_until">  Valid until\n    </string>
+  <string name="protocol_label">Protocol\n  </string>
+  <string name="cert_note">Note: Fingerprints and full\ncertificate chain are currently not\nprovided by the server (Playwright limitation).</string>
+  <string name="em_dash">—</string>
+
+  <!-- Buttons -->
+  <string name="ok">OK</string>
+  <string name="send">Send</string>
+  <string name="close">Close</string>
+  <string name="close_current">Close current</string>
+
+  <!-- Menu -->
+  <string name="new_tab">New tab</string>
+  <string name="tabs_count">Tabs (%1$d)</string>
+  <string name="reload">Reload</string>
+  <string name="back">Back</string>
+  <string name="add_bookmark">Add bookmark</string>
+  <string name="bookmarks">Bookmarks</string>
+  <string name="history">History</string>
+  <string name="settings">Settings</string>
+  <string name="debug_overlay">Debug overlay</string>
+  <string name="server_address">Server address</string>
+  <string name="tabs">Tabs</string>
+  <string name="empty_tab">Empty tab</string>
+  <string name="clear_history">Clear history</string>
+
+  <!-- Settings items -->
+  <string name="default_browser_yes">Default browser: yes</string>
+  <string name="set_as_default">Set as default browser…</string>
+  <string name="default_hint_on">Default browser hint: on (tap to toggle)</string>
+  <string name="default_hint_off">Default browser hint: off (tap to toggle)</string>
+</resources>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Made by ChatGPT – May contain errors -->
+<resources>
+  <string name="app_name" translatable="false">DT Mini Browser</string>
+  <string name="hint_url">Indirizzo o termine di ricerca</string>
+  <string name="hint_empty">Inserisci sopra un indirizzo o un termine di ricerca\n\nServer: %1$s</string>
+  <string name="default_browser_title">Browser predefinito</string>
+  <string name="default_browser_message">DanlMiniBrowser non è impostato come browser predefinito. Consigliato per i link provenienti da altre app.</string>
+  <string name="dont_ask_again">Non chiedermelo più</string>
+  <string name="later">Più tardi</string>
+  <string name="toast_choose_default">Scegli il browser predefinito nelle impostazioni di sistema</string>
+  <string name="no_app_for_link">Nessuna app disponibile per questo link: %1$s</string>
+  <string name="session_expired">Sessione scaduta, ricaricamento</string>
+  <string name="server_unknown_request">Il server non riconosce questa richiesta</string>
+  <string name="error_prefix">Errore: %1$s</string>
+  <string name="no_page_loaded">Nessuna pagina caricata</string>
+  <string name="bookmark_saved">Segnalibro salvato</string>
+  <string name="history_cleared">Cronologia cancellata</string>
+  <string name="is_empty">%1$s è vuoto</string>
+  <string name="hint_off">Suggerimento disattivato</string>
+  <string name="hint_on">Suggerimento attivato</string>
+  <string name="tab_n">Scheda %1$d</string>
+  <string name="download">Scarica</string>
+  <string name="save">Salva</string>
+  <string name="cancel">Annulla</string>
+  <string name="download_started">Download avviato: %1$s</string>
+  <string name="download_failed">Download non riuscito: %1$s</string>
+  <string name="download_manager_unavailable">DownloadManager non disponibile</string>
+  <string name="certificate">Certificato</string>
+  <string name="certificate_for">Certificato: %1$s</string>
+  <string name="conn_insecure">La connessione non è sicura (HTTP).\nNon viene utilizzato alcun certificato.\n\nAltri possono leggere o modificare i dati.</string>
+  <string name="conn_secure">La connessione è crittografata (HTTPS).\n\n</string>
+  <string name="issued_to">Rilasciato a\n</string>
+  <string name="common_name">  Nome comune (CN)\n</string>
+  <string name="issued_by">Rilasciato da\n</string>
+  <string name="validity">Periodo di validità\n</string>
+  <string name="issued_on">  Emesso il\n    </string>
+  <string name="valid_until">  Valido fino al\n    </string>
+  <string name="protocol_label">Protocollo\n  </string>
+  <string name="cert_note">Nota: le impronte digitali e la catena completa\ndei certificati non sono attualmente fornite\ndal server (limite di Playwright).</string>
+  <string name="em_dash">—</string>
+  <string name="ok">OK</string>
+  <string name="send">Invia</string>
+  <string name="close">Chiudi</string>
+  <string name="close_current">Chiudi scheda corrente</string>
+  <string name="new_tab">Nuova scheda</string>
+  <string name="tabs_count">Schede (%1$d)</string>
+  <string name="reload">Ricarica</string>
+  <string name="back">Indietro</string>
+  <string name="add_bookmark">Aggiungi segnalibro</string>
+  <string name="bookmarks">Segnalibri</string>
+  <string name="history">Cronologia</string>
+  <string name="settings">Impostazioni</string>
+  <string name="debug_overlay">Sovrapposizione di debug</string>
+  <string name="server_address">Indirizzo del server</string>
+  <string name="tabs">Schede</string>
+  <string name="empty_tab">Scheda vuota</string>
+  <string name="clear_history">Cancella cronologia</string>
+  <string name="default_browser_yes">Browser predefinito: sì</string>
+  <string name="set_as_default">Imposta come browser predefinito…</string>
+  <string name="default_hint_on">Avviso browser predefinito: attivo (tocca per cambiare)</string>
+  <string name="default_hint_off">Avviso browser predefinito: disattivato (tocca per cambiare)</string>
+</resources>

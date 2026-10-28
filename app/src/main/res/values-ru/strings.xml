@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Made by ChatGPT – May contain errors -->
+<resources>
+    <string name="app_name" translatable="false">DT Mini Browser</string>
+
+    <!-- URL bar -->
+    <string name="hint_url">Адрес или поисковый запрос</string>
+    <string name="hint_empty">Введите адрес или поисковый запрос выше\n\nСервер: %1$s</string>
+
+    <!-- Default browser prompt -->
+    <string name="default_browser_title">Браузер по умолчанию</string>
+    <string name="default_browser_message">DanlMiniBrowser не установлен в качестве браузера по умолчанию. Рекомендуется для открытия ссылок из других приложений.</string>
+    <string name="dont_ask_again">Больше не спрашивать</string>
+    <string name="later">Позже</string>
+    <string name="toast_choose_default">Выберите браузер по умолчанию в системных настройках</string>
+
+    <!-- Toasts / errors -->
+    <string name="no_app_for_link">Нет приложения для этой ссылки: %1$s</string>
+    <string name="session_expired">Сеанс истёк, перезагрузка</string>
+    <string name="server_unknown_request">Сервер не распознаёт этот запрос</string>
+    <string name="error_prefix">Ошибка: %1$s</string>
+    <string name="no_page_loaded">Страница не загружена</string>
+    <string name="bookmark_saved">Закладка сохранена</string>
+    <string name="history_cleared">История очищена</string>
+    <string name="is_empty">%1$s пусто</string>
+    <string name="hint_off">Подсказки выключены</string>
+    <string name="hint_on">Подсказки включены</string>
+    <string name="tab_n">Вкладка %1$d</string>
+
+    <!-- Download -->
+    <string name="download">Скачать</string>
+    <string name="save">Сохранить</string>
+    <string name="cancel">Отмена</string>
+    <string name="download_started">Загрузка началась: %1$s</string>
+    <string name="download_failed">Не удалось скачать: %1$s</string>
+    <string name="download_manager_unavailable">Менеджер загрузок недоступен</string>
+
+    <!-- Certificate dialog -->
+    <string name="certificate">Сертификат</string>
+    <string name="certificate_for">Сертификат: %1$s</string>
+    <string name="conn_insecure">Соединение небезопасно (HTTP).\nСертификат не используется.\n\nДругие лица могут читать или изменять данные.</string>
+    <string name="conn_secure">Соединение зашифровано (HTTPS).\n\n</string>
+    <string name="issued_to">Выдан для\n</string>
+    <string name="common_name">  Общее имя (CN)\n</string>
+    <string name="issued_by">Кем выдан\n</string>
+    <string name="validity">Срок действия\n</string>
+    <string name="issued_on">  Дата выдачи\n    </string>
+    <string name="valid_until">  Действителен до\n    </string>
+    <string name="protocol_label">Протокол\n  </string>
+    <string name="cert_note">Примечание: отпечатки сертификатов и полная\nцепочка сертификатов сейчас не предоставляются\nсервером (ограничение Playwright).</string>
+    <string name="em_dash">—</string>
+
+    <!-- Buttons -->
+    <string name="ok">ОК</string>
+    <string name="send">Отправить</string>
+    <string name="close">Закрыть</string>
+    <string name="close_current">Закрыть текущую вкладку</string>
+
+    <!-- Menu -->
+    <string name="new_tab">Новая вкладка</string>
+    <string name="tabs_count">Вкладки (%1$d)</string>
+    <string name="reload">Обновить</string>
+    <string name="back">Назад</string>
+    <string name="add_bookmark">Добавить закладку</string>
+    <string name="bookmarks">Закладки</string>
+    <string name="history">История</string>
+    <string name="settings">Настройки</string>
+    <string name="debug_overlay">Панель отладки</string>
+    <string name="server_address">Адрес сервера</string>
+    <string name="tabs">Вкладки</string>
+    <string name="empty_tab">Пустая вкладка</string>
+    <string name="clear_history">Очистить историю</string>
+
+    <!-- Settings items -->
+    <string name="default_browser_yes">Браузер по умолчанию: да</string>
+    <string name="set_as_default">Установить браузером по умолчанию…</string>
+    <string name="default_hint_on">Подсказка о браузере по умолчанию: включена (нажмите, чтобы изменить)</string>
+    <string name="default_hint_off">Подсказка о браузере по умолчанию: выключена (нажмите, чтобы изменить)</string>
+</resources>
