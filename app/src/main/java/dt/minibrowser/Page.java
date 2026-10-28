@@ -39,6 +39,12 @@ public class Page {
         public float[] clip;            // i: optionales Clip-Rechteck
         public boolean checked, placeholder;
         public float textScaleX = -1f;  // Cache fuer die Textbreiten-Anpassung
+        // Cache fuer das Text-Layout (wird beim ersten Zeichnen berechnet)
+        public float layoutScale = -1f; // Zoomfaktor, fuer den das Layout berechnet wurde
+        public boolean perWord;         // true: Woerter einzeln setzen (Abstaende bleiben erhalten)
+        public float fontMul = 1f;      // Schriftverkleinerung, falls Zeile sonst zu stark gestaucht wuerde
+        public String[] words;          // perWord: die Woerter
+        public float[] wx;              // perWord: x-Versatz je Wort (Bildschirm-px)
     }
 
     public final int gen = COUNTER.incrementAndGet();

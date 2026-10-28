@@ -61,7 +61,7 @@ public class PageView extends View {
     private final GestureDetector gd;
     private final ScaleGestureDetector sgd;
 
-    private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.SUBPIXEL_TEXT_FLAG);
+    private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.SUBPIXEL_TEXT_FLAG | Paint.LINEAR_TEXT_FLAG);
     private final Paint fill = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint stroke = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint bmpPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
@@ -259,28 +259,102 @@ public class PageView extends View {
         return t;
     }
 
-    /** Streckfaktor, damit Androids Text genauso breit wird wie von Chromium gemessen. */
-    private float textScaleX(Page.Item it) {
-        if (it.textScaleX >= 0f) return it.textScaleX;
+    /**
+     * Berechnet einmal pro Textzeile, wie sie auf Androids Schrift passend zur vom Server gemessenen
+     * Breite (it.w) gesetzt wird. Wichtig: Die Abstaende zwischen Woertern werden nie zusammengequetscht.
+     * Ist die Zeile mit Androids Schrift zu breit, werden die Woerter einzeln gesetzt: Die Abstaende
+     * bleiben (mind. 90% eines Leerzeichens), die Woerter werden nur leicht gestaucht (bis 80%) und
+     * erst darueber hinaus wird die Schrift insgesamt etwas kleiner. (Ein echter Zeilenumbruch in die
+     * naechste Zeile ist nicht moeglich, weil das Layout vom Server fest vorgegeben ist und der Text
+     * sonst die darunterliegende Zeile ueberdecken wuerde.)
+     */
+    private void layoutText(Page.Item it) {
+        // Gemessen wird in Bildschirm-Pixeln bei der echten Zeichengroesse: Bei kleinen Groessen
+        // rundet Android die Zeichenbreiten (Hinting), die Breite laesst sich daher nicht linear
+        // von 16 px auf z.B. 17,8 px umrechnen und fette Woerter wuerden an die Nachbarn stossen.
+        if (it.layoutScale == scale) return;
+        it.layoutScale = scale;
+        it.perWord = false;
+        it.fontMul = 1f;
+        it.textScaleX = 1f;
         paint.setTypeface(face(it.flags));
-        paint.setTextSize(it.size);
+        paint.setTextSize(it.size * scale);
         paint.setTextScaleX(1f);
-        float mw = paint.measureText(it.s);
-        float sx = (mw > 0f && it.w > 0f) ? it.w / mw : 1f;
-        it.textScaleX = Math.max(0.6f, Math.min(1.4f, sx));
-        return it.textScaleX;
+        float total = paint.measureText(it.s);
+        float W = it.w * scale;
+        if (total <= 0f || W <= 0f) return;
+        float r = W / total;
+        String[] ws = it.s.split(" ");
+        int n = ws.length;
+        if (n < 2) {
+            // Einzelnes Wort: nur Breite angleichen; bei starker Stauchung Schrift etwas verkleinern
+            if (r < 0.8f) {
+                it.fontMul = Math.max(0.7f, r / 0.8f);
+                it.textScaleX = Math.max(0.6f, r / it.fontMul);
+            } else {
+                it.textScaleX = Math.min(1.4f, r);
+            }
+            return;
+        }
+        if (r >= 0.97f && r <= 1.03f) { // passt praktisch genau: ganze Zeile in einem Rutsch
+            it.textScaleX = r;
+            return;
+        }
+        float[] wd = new float[n];
+        float wsum = 0f;
+        for (int i = 0; i < n; i++) { wd[i] = paint.measureText(ws[i]); wsum += wd[i]; }
+        float sp = paint.measureText(" ");
+        if (wsum <= 0f || sp <= 0f) { it.textScaleX = Math.max(0.6f, Math.min(1.4f, r)); return; }
+        int gaps = n - 1;
+        float f = 1f, k, g;
+        if (r > 1f) {
+            // Androids Schrift ist schmaler: Zusatzplatz auf die Abstaende verteilen (max. 2 Leerzeichen),
+            // den Rest ueber leicht breitere Woerter (max. 120%)
+            k = 1f;
+            g = (W - wsum) / gaps;
+            if (g > 2f * sp) {
+                k = Math.min(1.2f, (W - gaps * 2f * sp) / wsum);
+                g = (W - k * wsum) / gaps;
+            }
+        } else {
+            // Androids Schrift ist breiter: Abstaende bleiben, Woerter werden gestaucht
+            float gmin = 0.9f * sp;
+            k = (W - gaps * gmin) / wsum;
+            if (k < 0.8f) {
+                float t = 0.8f * wsum + gaps * gmin;
+                f = Math.max(0.7f, W / t);
+                k = Math.max(0.6f, Math.min(1f, (W / f - gaps * gmin) / wsum));
+            }
+            g = (W / f - k * wsum) / gaps;
+            if (g < 0f) g = 0f;
+        }
+        it.words = ws;
+        it.wx = new float[n];
+        float x = 0f;
+        for (int i = 0; i < n; i++) {
+            it.wx[i] = x;
+            x += (k * wd[i] + g) * f;
+        }
+        it.fontMul = f;
+        it.textScaleX = k;
+        it.perWord = true;
     }
 
     private void drawText(Canvas c, Page.Item it, float dx, float dy, float dw, float dh) {
-        float sx = textScaleX(it);
+        layoutText(it);
         paint.setTypeface(face(it.flags));
-        paint.setTextSize(it.size * scale);
-        paint.setTextScaleX(sx);
+        paint.setTextSize(it.size * it.fontMul * scale);
+        paint.setTextScaleX(it.textScaleX);
         paint.setColor(it.color);
         paint.getFontMetrics(fm);
         float tot = fm.descent - fm.ascent;
         float base = dy + (tot > 0f ? (-fm.ascent) * dh / tot : -fm.ascent);
-        c.drawText(it.s, dx, base, paint);
+        if (it.perWord) {
+            for (int i = 0; i < it.words.length; i++)
+                c.drawText(it.words[i], dx + it.wx[i], base, paint);
+        } else {
+            c.drawText(it.s, dx, base, paint);
+        }
         if ((it.flags & 12) != 0) {
             paint.setStrokeWidth(Math.max(1f, it.size * scale / 14f));
             if ((it.flags & 4) != 0) {

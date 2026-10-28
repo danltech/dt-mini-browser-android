@@ -433,7 +433,7 @@ public class MainActivity extends Activity implements PageView.Listener {
             if (safe.length() == 0) safe = "download.bin";
             DownloadManager.Request req = new DownloadManager.Request(Uri.parse(url));
             req.setTitle(safe);
-            req.setDescription("DanlMiniBrowser");
+            req.setDescription("DTMiniBrowserAE");
             req.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
             req.setAllowedOverRoaming(true);
             try {
