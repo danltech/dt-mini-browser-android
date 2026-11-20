@@ -18,6 +18,8 @@ package dt.minibrowser;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -37,10 +39,12 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.util.UUID;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.provider.Settings;
 import android.content.pm.PackageManager;
@@ -77,6 +81,10 @@ public class MainActivity extends Activity implements PageView.Listener {
     private SharedPreferences prefs;
     private Store store;
     private String server;
+
+    private static final int REQ_QR_SETUP = 9421;
+    /** Edit-Felder des Server-Dialogs, solange QR-Scan laeuft. */
+    private EditText pendingEtUrl, pendingEtTok, pendingEtFp;
     private String clientId;
     private String deviceModel;
     private String androidVer;
@@ -96,6 +104,8 @@ public class MainActivity extends Activity implements PageView.Listener {
         prefs = getSharedPreferences("mini", MODE_PRIVATE);
         server = prefs.getString("server", "http://192.168.0.52:8080");
         clientId = prefs.getString("clientId", null);
+        Net.setAuthToken(prefs.getString("token", ""));
+        Net.setCertFingerprint(prefs.getString("certFp", ""));
         if (clientId == null) {
             clientId = UUID.randomUUID().toString();
             prefs.edit().putString("clientId", clientId).apply();
@@ -229,7 +239,11 @@ public class MainActivity extends Activity implements PageView.Listener {
     }
 
     private void applyServer() {
-        if (!server.startsWith("http")) server = "http://" + server;
+        if (!server.startsWith("http://") && !server.startsWith("https://")) {
+            // Bei gesetztem Zertifikat-Fingerprint HTTPS bevorzugen
+            if (Net.getCertFingerprint().length() > 0) server = "https://" + server;
+            else server = "http://" + server;
+        }
         while (server.endsWith("/")) server = server.substring(0, server.length() - 1);
         pv.setServerBase(server);
         pv.setHint(getString(R.string.hint_empty, server));
@@ -275,6 +289,51 @@ public class MainActivity extends Activity implements PageView.Listener {
         request(path, TAP);
     }
 
+    @Override
+    public void onLinkLongPress(final String href, final String text) {
+        if (href == null || href.length() == 0) return;
+        final boolean web = href.startsWith("http://") || href.startsWith("https://");
+        final ArrayList<Integer> acts = new ArrayList<Integer>();
+        ArrayList<String> labels = new ArrayList<String>();
+        if (web) {
+            acts.add(0);
+            labels.add(getString(R.string.open_new_tab));
+        }
+        acts.add(1);
+        labels.add(getString(R.string.copy_link_address));
+        if (text != null && text.length() > 0) {
+            acts.add(2);
+            labels.add(getString(R.string.copy_link_text));
+        }
+        String title = href.length() > 80 ? href.substring(0, 77) + "..." : href;
+        new AlertDialog.Builder(this)
+                .setTitle(title)
+                .setItems(labels.toArray(new String[0]), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface d, int which) {
+                        int a = acts.get(which);
+                        if (a == 0) openInNewTab(href);
+                        else if (a == 1) PageView.copyToClipboard(MainActivity.this, href);
+                        else PageView.copyToClipboard(MainActivity.this, text);
+                    }
+                })
+                .show();
+    }
+
+    private void openInNewTab(String href) {
+        saveCurrentTab();
+        tabs.add(new Tab());
+        tabIndex = tabs.size() - 1;
+        sid = null;
+        depth = 0;
+        pv.setPage(null, false);
+        urlField.setText(href);
+        updateLock(null);
+        Toast.makeText(this, getString(R.string.tab_n, tabs.size()), Toast.LENGTH_SHORT).show();
+        invalidateOptionsMenu();
+        load(href);
+    }
+
     private boolean isExternalUrl(String u) {
         if (u == null) return false;
         String x = u.toLowerCase();
@@ -302,6 +361,10 @@ public class MainActivity extends Activity implements PageView.Listener {
 
     @Override
     public void onBackPressed() {
+        if (pv.hasSelection()) {
+            pv.clearSelection();
+            return;
+        }
         if (depth > 0 && sid != null) {
             request("/back?sid=" + Net.enc(sid) + "&cid=" + Net.enc(clientId) + "&lang=" + Net.enc(clientLang()), BACK);
         } else {
@@ -577,8 +640,30 @@ public class MainActivity extends Activity implements PageView.Listener {
         else if ("textarea".equals(t)) type |= InputType.TYPE_TEXT_FLAG_MULTI_LINE;
         et.setInputType(type);
         et.selectAll();
+
+        LinearLayout box = new LinearLayout(this);
+        box.setOrientation(LinearLayout.VERTICAL);
+        box.addView(et, new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        LinearLayout row = new LinearLayout(this);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        Button paste = new Button(this, null, android.R.attr.borderlessButtonStyle);
+        paste.setText(android.R.string.paste);
+        paste.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) { pasteInto(et); }
+        });
+        Button copy = new Button(this, null, android.R.attr.borderlessButtonStyle);
+        copy.setText(android.R.string.copy);
+        copy.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) { copyFrom(et); }
+        });
+        row.addView(paste, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+        row.addView(copy, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+        box.addView(row, new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
         AlertDialog d = new AlertDialog.Builder(this)
-                .setView(et)
+                .setView(box)
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dlg, int w) {
@@ -596,6 +681,264 @@ public class MainActivity extends Activity implements PageView.Listener {
         d.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         d.show();
     }
+
+    /** Zwischenablage an der Cursorposition (bzw. statt der Auswahl) einfuegen. */
+    private void pasteInto(EditText et) {
+        try {
+            ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            if (cm == null || !cm.hasPrimaryClip()) return;
+            ClipData cd = cm.getPrimaryClip();
+            if (cd == null || cd.getItemCount() == 0) return;
+            CharSequence t = cd.getItemAt(0).coerceToText(this);
+            if (t == null) return;
+            int a = Math.max(0, Math.min(et.getSelectionStart(), et.getSelectionEnd()));
+            int b = Math.max(0, Math.max(et.getSelectionStart(), et.getSelectionEnd()));
+            et.getText().replace(a, b, t);
+        } catch (Exception e) {
+            Log.w(TAG, "Einfuegen fehlgeschlagen: " + e);
+        }
+    }
+
+    /** Ausgewaehlten Text (oder ohne Auswahl alles) aus dem Feld kopieren. */
+    private void copyFrom(EditText et) {
+        int a = Math.max(0, Math.min(et.getSelectionStart(), et.getSelectionEnd()));
+        int b = Math.max(0, Math.max(et.getSelectionStart(), et.getSelectionEnd()));
+        String all = et.getText().toString();
+        String t = a < b ? all.substring(a, b) : all;
+        if (t.length() > 0) PageView.copyToClipboard(this, t);
+    }
+
+    /** Server-Adresse, Token und Zertifikat-Fingerprint (Setup per QR/Text). */
+    private void showServerDialog() {
+        LinearLayout box = new LinearLayout(this);
+        box.setOrientation(LinearLayout.VERTICAL);
+        int pad = (int) (12 * getResources().getDisplayMetrics().density);
+        box.setPadding(pad, pad, pad, 0);
+
+        final EditText etUrl = new EditText(this);
+        etUrl.setHint(R.string.server_address);
+        etUrl.setText(server);
+        etUrl.setSingleLine(true);
+        box.addView(etUrl);
+
+        final EditText etTok = new EditText(this);
+        etTok.setHint(R.string.auth_token);
+        etTok.setText(Net.getAuthToken());
+        etTok.setSingleLine(true);
+        box.addView(etTok);
+
+        final EditText etFp = new EditText(this);
+        etFp.setHint(R.string.cert_fingerprint);
+        etFp.setText(Net.getCertFingerprint());
+        etFp.setSingleLine(true);
+        box.addView(etFp);
+
+        LinearLayout row = new LinearLayout(this);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+
+        Button scanSetup = new Button(this, null, android.R.attr.borderlessButtonStyle);
+        scanSetup.setText(R.string.scan_qr);
+        scanSetup.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                pendingEtUrl = etUrl;
+                pendingEtTok = etTok;
+                pendingEtFp = etFp;
+                startQrScan();
+            }
+        });
+        row.addView(scanSetup, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+
+        Button pasteSetup = new Button(this, null, android.R.attr.borderlessButtonStyle);
+        pasteSetup.setText(R.string.paste_setup);
+        pasteSetup.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                String clip = readClipboardText();
+                if (clip != null && applySetupString(clip, etUrl, etTok, etFp)) {
+                    Toast.makeText(MainActivity.this, R.string.setup_applied, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(MainActivity.this, R.string.setup_invalid, Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+        row.addView(pasteSetup, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+        box.addView(row);
+
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.server_address)
+                .setView(box)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface d, int w) {
+                        commitServerFields(etUrl, etTok, etFp);
+                    }
+                })
+                .setNegativeButton(R.string.cancel, null)
+                .show();
+    }
+
+    private void commitServerFields(EditText etUrl, EditText etTok, EditText etFp) {
+        if (etUrl != null) server = etUrl.getText().toString().trim();
+        String tok = etTok != null ? etTok.getText().toString().trim() : Net.getAuthToken();
+        String fp = etFp != null ? etFp.getText().toString().trim().toLowerCase() : Net.getCertFingerprint();
+        Net.setAuthToken(tok);
+        Net.setCertFingerprint(fp);
+        prefs.edit()
+                .putString("server", server)
+                .putString("token", tok)
+                .putString("certFp", fp)
+                .apply();
+        applyServer();
+    }
+
+    /** QR scannen via ZXing Barcode Scanner Intent (Android 4 / API 16 kompatibel). */
+    private void startQrScan() {
+        Intent intent = new Intent("com.google.zxing.client.android.SCAN");
+        intent.putExtra("SCAN_MODE", "QR_CODE_MODE");
+        intent.putExtra("RESULT_DISPLAY_DURATION_MS", 0L);
+        intent.putExtra("PROMPT_MESSAGE", getString(R.string.scan_qr_prompt));
+        try {
+            startActivityForResult(intent, REQ_QR_SETUP);
+        } catch (ActivityNotFoundException e) {
+            promptInstallScanner();
+        }
+    }
+
+    private void promptInstallScanner() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.scan_qr)
+                .setMessage(R.string.scanner_missing)
+                .setPositiveButton(R.string.install_scanner, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface d, int w) {
+                        // Offizielle ZXing Barcode Scanner App
+                        Uri market = Uri.parse("market://details?id=com.google.zxing.client.android");
+                        Uri web = Uri.parse(
+                                "https://play.google.com/store/apps/details?id=com.google.zxing.client.android");
+                        try {
+                            startActivity(new Intent(Intent.ACTION_VIEW, market));
+                        } catch (ActivityNotFoundException ex) {
+                            try {
+                                startActivity(new Intent(Intent.ACTION_VIEW, web));
+                            } catch (Exception ignored) {
+                                Toast.makeText(MainActivity.this, R.string.scanner_missing, Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }
+                })
+                .setNegativeButton(R.string.paste_setup, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface d, int w) {
+                        String clip = readClipboardText();
+                        if (clip != null && applySetupString(clip, pendingEtUrl, pendingEtTok, pendingEtFp)) {
+                            commitServerFields(pendingEtUrl, pendingEtTok, pendingEtFp);
+                            Toast.makeText(MainActivity.this, R.string.setup_applied, Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(MainActivity.this, R.string.setup_invalid, Toast.LENGTH_LONG).show();
+                        }
+                    }
+                })
+                .setNeutralButton(R.string.cancel, null)
+                .show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode != REQ_QR_SETUP) return;
+        if (resultCode != RESULT_OK || data == null) return;
+        String contents = data.getStringExtra("SCAN_RESULT");
+        if (contents == null) contents = "";
+        contents = contents.trim();
+        if (applySetupString(contents, pendingEtUrl, pendingEtTok, pendingEtFp)) {
+            // Felder sind u.U. schon weg (Dialog zu) – trotzdem speichern
+            if (pendingEtUrl != null) {
+                commitServerFields(pendingEtUrl, pendingEtTok, pendingEtFp);
+            } else {
+                // Werte stehen schon in Net / server durch applySetupString ohne EditTexts
+                // applySetupString mit null-EditTexts: braucht Expand - siehe unten
+                prefs.edit()
+                        .putString("server", server)
+                        .putString("token", Net.getAuthToken())
+                        .putString("certFp", Net.getCertFingerprint())
+                        .apply();
+                applyServer();
+            }
+            Toast.makeText(this, R.string.setup_applied, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, getString(R.string.setup_invalid) + "\n" + contents, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private String readClipboardText() {
+        try {
+            ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            if (cm == null || !cm.hasPrimaryClip()) return null;
+            ClipData cd = cm.getPrimaryClip();
+            if (cd == null || cd.getItemCount() == 0) return null;
+            CharSequence t = cd.getItemAt(0).coerceToText(this);
+            return t != null ? t.toString().trim() : null;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * Setup-String vom Server (QR / setup.txt):
+     *   dtmini:1|https://host:port|TOKEN|FINGERPRINT
+     *   dtmini:token|TOKEN
+     *   dtmini:cert|FINGERPRINT|https://host:port
+     * Schreibt bei Erfolg auch in server / Net, auch wenn EditTexts null sind.
+     */
+    private boolean applySetupString(String s, EditText etUrl, EditText etTok, EditText etFp) {
+        if (s == null) return false;
+        s = s.trim();
+        // Scanner / Messenger haengen oft Newlines, Spaces oder URL-Encoding an
+        s = s.replace("\r", "").replace("\n", "").trim();
+        if (s.contains("%7C") || s.contains("%3A") || s.contains("%7c")) {
+            try { s = java.net.URLDecoder.decode(s, "UTF-8"); } catch (Exception ignored) {}
+        }
+        // Manchmal kommt der Text in Anfuehrungszeichen
+        if (s.length() >= 2 && ((s.charAt(0) == '"' && s.charAt(s.length() - 1) == '"')
+                || (s.charAt(0) == '\'' && s.charAt(s.length() - 1) == '\''))) {
+            s = s.substring(1, s.length() - 1).trim();
+        }
+        if (!s.startsWith("dtmini:")) return false;
+        String[] p = s.split("\\|", -1);
+        if (p.length < 2) return false;
+        if (p[0].equals("dtmini:1") && p.length >= 2) {
+            if (p[1].length() > 0) {
+                if (etUrl != null) etUrl.setText(p[1]);
+                server = p[1];
+            }
+            if (p.length >= 3) {
+                if (etTok != null) etTok.setText(p[2]);
+                Net.setAuthToken(p[2]);
+            }
+            if (p.length >= 4) {
+                String fp = p[3].trim().toLowerCase();
+                if (etFp != null) etFp.setText(fp);
+                Net.setCertFingerprint(fp);
+            }
+            return true;
+        }
+        if (p[0].equals("dtmini:token") && p.length >= 2) {
+            if (etTok != null) etTok.setText(p[1]);
+            Net.setAuthToken(p[1]);
+            return true;
+        }
+        if (p[0].equals("dtmini:cert") && p.length >= 2) {
+            String fp = p[1].trim().toLowerCase();
+            if (etFp != null) etFp.setText(fp);
+            Net.setCertFingerprint(fp);
+            if (p.length >= 3 && p[2].length() > 0) {
+                if (etUrl != null) etUrl.setText(p[2]);
+                server = p[2];
+            }
+            return true;
+        }
+        return false;
+    }
+
 
     // ------------------------------------------------------------------ Menue
 
@@ -632,22 +975,7 @@ public class MainActivity extends Activity implements PageView.Listener {
                 item.setChecked(pv.isDebug());
                 return true;
             case M_SERVER: {
-                final EditText et = new EditText(this);
-                et.setText(server);
-                et.setSingleLine(true);
-                new AlertDialog.Builder(this)
-                        .setTitle(R.string.server_address)
-                        .setView(et)
-                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface d, int w) {
-                                server = et.getText().toString().trim();
-                                prefs.edit().putString("server", server).apply();
-                                applyServer();
-                            }
-                        })
-                        .setNegativeButton(R.string.cancel, null)
-                        .show();
+                showServerDialog();
                 return true;
             }
             case M_BOOKMARK: {

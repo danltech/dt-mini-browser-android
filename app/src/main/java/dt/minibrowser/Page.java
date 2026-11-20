@@ -38,6 +38,7 @@ public class Page {
         public float radius;            // r: Eckenradius
         public float[] clip;            // i: optionales Clip-Rechteck
         public boolean checked, placeholder;
+        public int blk = -1;            // t: Absatz-/Block-ID vom Server (-1 = unbekannt)
         public float textScaleX = -1f;  // Cache fuer die Textbreiten-Anpassung
         // Cache fuer das Text-Layout (wird beim ersten Zeichnen berechnet)
         public float layoutScale = -1f; // Zoomfaktor, fuer den das Layout berechnet wurde
@@ -125,6 +126,7 @@ public class Page {
                     it.color = (int) t.getLong(6);
                     it.size = (float) t.getDouble(7);
                     it.flags = t.getInt(8);
+                    it.blk = t.optInt(9, -1);
                     break;
                 case 'i':
                     it.id = t.getInt(5);
@@ -137,6 +139,7 @@ public class Page {
                     break;
                 case 'a':
                     it.s = t.getString(5);
+                    it.text = t.optString(6, "");   // sichtbarer Linktext (neuere Server)
                     break;
                 case 'f':
                     it.s = t.getString(5);

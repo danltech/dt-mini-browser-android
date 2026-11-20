@@ -76,4 +76,21 @@
   <string name="set_as_default">Set as default browser…</string>
   <string name="default_hint_on">Default browser hint: on (tap to toggle)</string>
   <string name="default_hint_off">Default browser hint: off (tap to toggle)</string>
+
+  <!-- Text selection / link menu -->
+  <string name="open_new_tab">Open in new tab</string>
+  <string name="copy_link_address">Copy link address</string>
+  <string name="copy_link_text">Copy link text</string>
+  <string name="copied">Copied</string>
+
+  <string name="auth_token">Auth token (optional)</string>
+  <string name="cert_fingerprint">Cert SHA-256 fingerprint (optional)</string>
+  <string name="paste_setup">Paste setup / QR text</string>
+  <string name="setup_applied">Setup applied</string>
+  <string name="setup_invalid">Not a valid setup string</string>
+
+  <string name="scan_qr">Scan QR code</string>
+  <string name="scan_qr_prompt">Scan the server setup QR code</string>
+  <string name="scanner_missing">No QR scanner app found. Install the free ZXing Barcode Scanner, or paste the setup text from setup.txt / the QR content.</string>
+  <string name="install_scanner">Install scanner</string>
 </resources>

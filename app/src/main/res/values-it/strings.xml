@@ -61,4 +61,21 @@
   <string name="set_as_default">Imposta come browser predefinito…</string>
   <string name="default_hint_on">Avviso browser predefinito: attivo (tocca per cambiare)</string>
   <string name="default_hint_off">Avviso browser predefinito: disattivato (tocca per cambiare)</string>
+
+  <!-- Text selection / link menu -->
+  <string name="open_new_tab">Apri in una nuova scheda</string>
+  <string name="copy_link_address">Copia indirizzo link</string>
+  <string name="copy_link_text">Copia testo del link</string>
+  <string name="copied">Copiato</string>
+
+  <string name="auth_token">Token di autenticazione (opzionale)</string>
+  <string name="cert_fingerprint">Impronta SHA-256 del certificato (opzionale)</string>
+  <string name="paste_setup">Incolla setup / testo QR</string>
+  <string name="setup_applied">Setup applicato</string>
+  <string name="setup_invalid">Stringa di setup non valida</string>
+
+  <string name="scan_qr">Scansiona codice QR</string>
+  <string name="scan_qr_prompt">Scansiona il codice QR di setup del server</string>
+  <string name="scanner_missing">Nessuna app scanner QR trovata. Installa ZXing Barcode Scanner oppure incolla il testo di setup.</string>
+  <string name="install_scanner">Installa scanner</string>
 </resources>

@@ -74,4 +74,20 @@
     <string name="set_as_default">Als Standard-Browser einrichten…</string>
     <string name="default_hint_on">Hinweis Standard-Browser: an (tippen zum Umschalten)</string>
     <string name="default_hint_off">Hinweis Standard-Browser: aus (tippen zum Umschalten)</string>
+
+    <string name="auth_token">Auth-Token (optional)</string>
+    <string name="cert_fingerprint">Zertifikat-SHA-256-Fingerprint (optional)</string>
+    <string name="paste_setup">Setup / QR-Text einfuegen</string>
+    <string name="setup_applied">Setup uebernommen</string>
+    <string name="setup_invalid">Kein gueltiger Setup-String</string>
+
+    <string name="open_new_tab">In neuem Tab oeffnen</string>
+    <string name="copy_link_address">Linkadresse kopieren</string>
+    <string name="copy_link_text">Linktext kopieren</string>
+    <string name="copied">Kopiert</string>
+
+    <string name="scan_qr">QR-Code scannen</string>
+    <string name="scan_qr_prompt">Server-Setup-QR-Code scannen</string>
+    <string name="scanner_missing">Keine QR-Scanner-App gefunden. Bitte den kostenlosen ZXing Barcode Scanner installieren, oder den Setup-Text aus setup.txt / dem QR-Inhalt einfuegen.</string>
+    <string name="install_scanner">Scanner installieren</string>
 </resources>
