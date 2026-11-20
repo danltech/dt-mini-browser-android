@@ -2,97 +2,52 @@
 
 **A tiny, dependency-free Android browser that lets a server do the heavy lifting.**
 
-DT Mini Browser (by DanlTech) is a *server-side rendered* browser for Android. Instead of running a full web engine on your phone, the app talks to a rendering server ([`dt-mini-browser-server`](https://github.com/danltech/dt-mini-browser-server)). The server loads pages in a real Chromium (JavaScript and CSS included) and sends back a compact "display list". The app only draws it.
+The app talks to a rendering server ([`dt-mini-browser-server`](https://github.com/danltech/dt-mini-browser-server)). The server loads pages in a real Chromium (JavaScript and CSS included) and sends back a compact display list; the app only draws it.
 
-> 🇩🇪 **Language note:** The user interface is currently **German only**. English (and other languages) are planned. Translations are welcome!
-
-> ⚠️ **Early version (v0.6).** Expect rough edges.
-
----
+> Status: **Beta 1.0**. Expect rough edges.
 
 ## Why?
 
-- 📉 **Light on the device**: no web engine in the app; the APK is only a few dozen KB
-- 🕰️ **Runs on old phones**: `minSdk 16` (Android 4.1+)
-- 🧱 **Zero dependencies**: plain Java, no AndroidX, no Kotlin, no third-party libraries
-- 🛡️ **Ads/trackers are filtered on the server** (common ad and tracking hosts are blocked)
+- Light on the device: no web engine in the app, tiny APK
+- Runs on old phones: `minSdk 16` (Android 4.1+)
+- Zero dependencies: plain Java, no AndroidX, no Kotlin
+- Ads/trackers are filtered on the server
 
 ## Features
 
-- Tabs
-- Bookmarks and history (last 100 entries, stored locally)
-- Text input in forms, tapping links and buttons
-- File downloads (routed through the server)
-- Certificate info dialog for HTTPS pages
-- Configurable server address
-- Can be set as the Android default browser (handles `http`/`https` links)
-- Debug overlay (for development)
-
-## How it works
-
-```
-┌──────────────┐   compact JSON (gzip)   ┌──────────────────┐   ┌─────────┐
-│ Android app  │ ◄────────────────────── │  Render server   │ ◄─┤ Website │
-│ (draws only) │ ──── taps / typing ───► │ (Playwright +    │   └─────────┘
-└──────────────┘                         │  Chromium)       │
-                                         └──────────────────┘
-```
+Tabs, bookmarks and history (stored locally), form input, downloads via the server, certificate info for HTTPS, setup by QR code, default-browser support (`http`/`https`), debug overlay. Languages: English, Deutsch, Español, Français, Italiano, Türkçe, Русский, 日本語, 简体中文.
 
 ## Getting started
 
-1. **Set up the server first** → see [dt-mini-browser-server](https://github.com/danltech/dt-mini-browser-server).
-2. Install the APK (see *Releases*) or build it yourself (below).
-3. In the app, open the menu → **Server-Adresse** and enter your server, e.g. `http://192.168.1.50:8080`
-   (Android emulator: `http://10.0.2.2:8080`).
-4. Enter a URL or a search term. Search terms go to DuckDuckGo (HTML version).
+1. Set up the server first: see [dt-mini-browser-server](https://github.com/danltech/dt-mini-browser-server).
+2. Install the APK from *Releases* (or build it yourself).
+3. In the app: menu → **Server address**, then enter e.g. `https://192.168.1.50:8080` (emulator: `http://10.0.2.2:8080`), or scan the setup QR code / paste `setup.txt`.
+4. Enter a URL or search term (search uses DuckDuckGo).
 
 ## Building
 
-Requirements: Android Studio (or Gradle 8.x), JDK 17+, Android SDK 36.
+Requires JDK 17+ and Android SDK 36 (Android Studio or Gradle).
 
 ```bash
 git clone https://github.com/danltech/dt-mini-browser-android.git
 cd dt-mini-browser-android
-# open in Android Studio, or:
 ./gradlew assembleRelease
 ```
 
-## Privacy & security – please read
+Release signing keys (`*.jks`, `*.keystore`) are git-ignored; use your own.
 
-Like any server-side rendering browser, **the server sees everything you browse**, including page contents and anything you type into forms. Only use a server you run yourself or fully trust.
+## Privacy & security
 
-- The app currently allows **cleartext HTTP** (`usesCleartextTraffic=true`) to reach a server in your home network. If you expose your server to the internet, put it behind **HTTPS (reverse proxy)** and add authentication.
-- The server stores cookies/sessions per client ID so you stay logged in.
-- Bookmarks and history stay on your device (SharedPreferences, no backup).
-- The app requests only `INTERNET` (and `WRITE_EXTERNAL_STORAGE` on Android 9 and below for downloads).
+- **The server sees everything you browse**, including form input. Use only a server you run yourself or fully trust.
+- Cleartext HTTP is allowed to reach servers in a home network. Prefer HTTPS with a token and a VPN or reverse proxy when going over the internet.
+- Bookmarks and history stay on the device (no backup). The app requests only `INTERNET` (and `WRITE_EXTERNAL_STORAGE` up to Android 9 for downloads).
 
-## Localization / translations
+## Translations
 
-- Default (fallback): **English** (`res/values/strings.xml`)
-- German: `res/values-de/strings.xml`
-- The client sends `lang=` (device language) to the server so error messages match.
-- To add a language: copy `values/strings.xml` to `values-xx/`, translate, open a **pull request**.
-
-## Roadmap
-
-- [x] English UI / localization (EN + DE)
-- [ ] Authentication between app and server
-- [ ] HTTPS-first server connection
-- [ ] Better layout for complex pages
-- [ ] Proper app name/icon
-
-## Contributing
-
-Issues and pull requests are welcome. Please open an issue first for larger changes.
-
-**Translations:** new languages via PR are especially welcome — only `strings.xml` (and optionally server `i18n.py`) need changing.
+Strings are in `app/src/main/res/values-*/strings.xml`. Pull requests for more languages are welcome.
 
 ## License
 
-Licensed under the [Apache License 2.0](LICENSE) © DanlTech
+Apache-2.0, see [LICENSE](LICENSE). The server is licensed separately (AGPL-3.0).
 
-The companion [server](https://github.com/danltech/dt-mini-browser-server) is licensed separately under the AGPL-3.0.
-
-## Disclaimer
-
-DT Mini Browser is an independent project. It is **not affiliated with, endorsed by, or sponsored by** Opera Software or any other browser vendor. All product names and trademarks mentioned belong to their respective owners. The concept of server-side rendering for lightweight browsing is a general technique used by several products.
+DT Mini Browser is an independent project and is not affiliated with, endorsed by, or sponsored by Opera Software or any other browser vendor.

@@ -7,7 +7,7 @@
 
     <!-- Default browser prompt -->
     <string name="default_browser_title">Standard-Browser</string>
-    <string name="default_browser_message">DanlMiniBrowser ist nicht als Standard-Browser eingestellt. Für Links aus anderen Apps empfohlen.</string>
+    <string name="default_browser_message">DT Mini Browser ist nicht als Standard-Browser eingestellt. Für Links aus anderen Apps empfohlen.</string>
     <string name="dont_ask_again">Nicht mehr fragen</string>
     <string name="later">Später</string>
     <string name="toast_choose_default">Bitte in den Systemeinstellungen den Standard-Browser wählen</string>

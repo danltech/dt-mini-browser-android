@@ -2,7 +2,7 @@
 
 <!-- Made by ChatGPT – May contain errors -->
 <resources>
-    <string name="app_name" translatable="false">DT Mini Browser</string>
+
 
     <!-- URL bar -->
     <string name="hint_url">アドレスまたは検索キーワード</string>
@@ -10,7 +10,7 @@
 
     <!-- Default browser prompt -->
     <string name="default_browser_title">デフォルトブラウザ</string>
-    <string name="default_browser_message">DanlMiniBrowserはデフォルトブラウザに設定されていません。他のアプリからリンクを開くため、デフォルトブラウザに設定することをおすすめします。</string>
+    <string name="default_browser_message">DT Mini Browserはデフォルトブラウザに設定されていません。他のアプリからリンクを開くため、デフォルトブラウザに設定することをおすすめします。</string>
     <string name="dont_ask_again">今後表示しない</string>
     <string name="later">後で</string>
     <string name="toast_choose_default">システム設定でデフォルトブラウザを選択してください</string>
@@ -77,4 +77,18 @@
     <string name="set_as_default">デフォルトブラウザに設定…</string>
     <string name="default_hint_on">デフォルトブラウザのヒント：オン（タップして切り替え）</string>
     <string name="default_hint_off">デフォルトブラウザのヒント：オフ（タップして切り替え）</string>
+
+  <string name="auth_token">認証トークン（任意）</string>
+  <string name="cert_fingerprint">証明書SHA-256フィンガープリント（任意）</string>
+  <string name="copied">コピーしました</string>
+  <string name="copy_link_address">リンクのアドレスをコピー</string>
+  <string name="copy_link_text">リンクのテキストをコピー</string>
+  <string name="install_scanner">スキャナーをインストール</string>
+  <string name="open_new_tab">新しいタブで開く</string>
+  <string name="paste_setup">セットアップ／QRテキストを貼り付け</string>
+  <string name="scan_qr">QRコードをスキャン</string>
+  <string name="scan_qr_prompt">サーバーのセットアップQRコードをスキャンしてください</string>
+  <string name="scanner_missing">QRスキャナーアプリが見つかりません。無料のZXing Barcode Scannerをインストールするか、setup.txt またはQRの内容のセットアップテキストを貼り付けてください。</string>
+  <string name="setup_applied">セットアップを適用しました</string>
+  <string name="setup_invalid">無効なセットアップ文字列です</string>
 </resources>

@@ -102,7 +102,7 @@ public class MainActivity extends Activity implements PageView.Listener {
         super.onCreate(b);
         density = getResources().getDisplayMetrics().density;
         prefs = getSharedPreferences("mini", MODE_PRIVATE);
-        server = prefs.getString("server", "http://192.168.0.52:8080");
+        server = prefs.getString("server", "http://10.0.2.2:8080");
         clientId = prefs.getString("clientId", null);
         Net.setAuthToken(prefs.getString("token", ""));
         Net.setCertFingerprint(prefs.getString("certFp", ""));

@@ -9,7 +9,7 @@
 
   <!-- Default browser prompt -->
   <string name="default_browser_title">Default browser</string>
-  <string name="default_browser_message">DanlMiniBrowser is not set as the default browser. Recommended for links from other apps.</string>
+  <string name="default_browser_message">DT Mini Browser is not set as the default browser. Recommended for links from other apps.</string>
   <string name="dont_ask_again">Don\'t ask again</string>
   <string name="later">Later</string>
   <string name="toast_choose_default">Please choose the default browser in system settings</string>

@@ -2,11 +2,11 @@
 
 <!-- Made by ChatGPT – May contain errors -->
 <resources>
-  <string name="app_name" translatable="false">DT Mini Browser</string>
+
   <string name="hint_url">Dirección o término de búsqueda</string>
   <string name="hint_empty">Introduce arriba una dirección o un término de búsqueda\n\nServidor: %1$s</string>
   <string name="default_browser_title">Navegador predeterminado</string>
-  <string name="default_browser_message">DanlMiniBrowser no está configurado como navegador predeterminado. Recomendado para los enlaces de otras aplicaciones.</string>
+  <string name="default_browser_message">DT Mini Browser no está configurado como navegador predeterminado. Recomendado para los enlaces de otras aplicaciones.</string>
   <string name="dont_ask_again">No volver a preguntar</string>
   <string name="later">Más tarde</string>
   <string name="toast_choose_default">Selecciona el navegador predeterminado en los ajustes del sistema</string>

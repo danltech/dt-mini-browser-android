@@ -2,7 +2,7 @@
 
 <!-- Made by ChatGPT – May contain errors -->
 <resources>
-    <string name="app_name" translatable="false">DT Mini Browser</string>
+
 
     <!-- URL bar -->
     <string name="hint_url">Адрес или поисковый запрос</string>
@@ -10,7 +10,7 @@
 
     <!-- Default browser prompt -->
     <string name="default_browser_title">Браузер по умолчанию</string>
-    <string name="default_browser_message">DanlMiniBrowser не установлен в качестве браузера по умолчанию. Рекомендуется для открытия ссылок из других приложений.</string>
+    <string name="default_browser_message">DT Mini Browser не установлен в качестве браузера по умолчанию. Рекомендуется для открытия ссылок из других приложений.</string>
     <string name="dont_ask_again">Больше не спрашивать</string>
     <string name="later">Позже</string>
     <string name="toast_choose_default">Выберите браузер по умолчанию в системных настройках</string>
@@ -77,4 +77,18 @@
     <string name="set_as_default">Установить браузером по умолчанию…</string>
     <string name="default_hint_on">Подсказка о браузере по умолчанию: включена (нажмите, чтобы изменить)</string>
     <string name="default_hint_off">Подсказка о браузере по умолчанию: выключена (нажмите, чтобы изменить)</string>
+
+  <string name="auth_token">Токен авторизации (необязательно)</string>
+  <string name="cert_fingerprint">SHA-256 отпечаток сертификата (необязательно)</string>
+  <string name="copied">Скопировано</string>
+  <string name="copy_link_address">Копировать адрес ссылки</string>
+  <string name="copy_link_text">Копировать текст ссылки</string>
+  <string name="install_scanner">Установить сканер</string>
+  <string name="open_new_tab">Открыть в новой вкладке</string>
+  <string name="paste_setup">Вставить текст настройки / QR</string>
+  <string name="scan_qr">Сканировать QR-код</string>
+  <string name="scan_qr_prompt">Отсканируйте QR-код настройки сервера</string>
+  <string name="scanner_missing">Приложение для сканирования QR не найдено. Установите бесплатный ZXing Barcode Scanner или вставьте текст настройки из setup.txt / содержимого QR.</string>
+  <string name="setup_applied">Настройка применена</string>
+  <string name="setup_invalid">Недопустимая строка настройки</string>
 </resources>

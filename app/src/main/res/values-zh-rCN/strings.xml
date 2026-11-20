@@ -2,11 +2,11 @@
 
 <!-- Made by ChatGPT – May contain errors -->
 <resources>
-  <string name="app_name" translatable="false">DT Mini Browser</string>
+
   <string name="hint_url">输入网址或搜索词</string>
   <string name="hint_empty">在上方输入网址或搜索词\n\n服务器：%1$s</string>
   <string name="default_browser_title">默认浏览器</string>
-  <string name="default_browser_message">DanlMiniBrowser 尚未设为默认浏览器。建议将其设为默认浏览器，以打开来自其他应用的链接。</string>
+  <string name="default_browser_message">DT Mini Browser 尚未设为默认浏览器。建议将其设为默认浏览器，以打开来自其他应用的链接。</string>
   <string name="dont_ask_again">不再询问</string>
   <string name="later">稍后</string>
   <string name="toast_choose_default">请在系统设置中选择默认浏览器</string>
@@ -61,4 +61,18 @@
   <string name="set_as_default">设为默认浏览器…</string>
   <string name="default_hint_on">默认浏览器提示：开启（点按切换）</string>
   <string name="default_hint_off">默认浏览器提示：关闭（点按切换）</string>
+
+  <string name="auth_token">验证令牌（可选）</string>
+  <string name="cert_fingerprint">证书 SHA-256 指纹（可选）</string>
+  <string name="copied">已复制</string>
+  <string name="copy_link_address">复制链接地址</string>
+  <string name="copy_link_text">复制链接文字</string>
+  <string name="install_scanner">安装扫描器</string>
+  <string name="open_new_tab">在新标签页中打开</string>
+  <string name="paste_setup">粘贴设置／二维码文本</string>
+  <string name="scan_qr">扫描二维码</string>
+  <string name="scan_qr_prompt">请扫描服务器设置二维码</string>
+  <string name="scanner_missing">未找到二维码扫描应用。请安装免费的 ZXing Barcode Scanner，或粘贴 setup.txt／二维码中的设置文本。</string>
+  <string name="setup_applied">设置已应用</string>
+  <string name="setup_invalid">不是有效的设置字符串</string>
 </resources>
