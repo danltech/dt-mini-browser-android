@@ -29,7 +29,7 @@ Tabs, bookmarks and history (stored locally), form input, downloads via the serv
 Requires JDK 17+ and Android SDK 36 (Android Studio or Gradle).
 
 ```bash
-git clone https://github.com/danltech/dt-mini-browser-android.git
+git clone https://github.com/xyz.danltech/dt-mini-browser-android.git
 cd dt-mini-browser-android
 ./gradlew assembleRelease
 ```

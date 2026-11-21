@@ -3,15 +3,15 @@ plugins {
 }
 
 android {
-    namespace 'dt.minibrowser'
+    namespace 'xyz.danltech.minibrowser'
     compileSdk 36
 
     defaultConfig {
-        applicationId 'dt.minibrowser'
+        applicationId 'xyz.danltech.minibrowser'
         minSdk 16
         targetSdk 36
-        versionCode 11
-        versionName '1.0.1-beta'
+        versionCode 12
+        versionName '1.0.2-beta'
     }
 
     compileOptions {

@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dt.minibrowser;
+package xyz.danltech.minibrowser;
 
-import android.os.Build;
 import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
