@@ -7,3 +7,9 @@
 - Default server is now the emulator address instead of a private IP
 - Product name unified to "DT Mini Browser"
 - README rewritten
+
+## 1.0.2 (versionCode 12)
+- New ID
+
+## 1.0.3 (versionCode 13)
+- Add files for F-Droid
