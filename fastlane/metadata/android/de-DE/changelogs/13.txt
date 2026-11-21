@@ -1,0 +1,1 @@
+Erste Version auf F-Droid. Gleicher Funktionsumfang wie Beta 1.0.2, nur mit F-Droid.

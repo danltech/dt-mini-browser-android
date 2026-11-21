@@ -1,0 +1,1 @@
+Winziger Browser ohne Abhängigkeiten, Seiten rendert dein eigener Server

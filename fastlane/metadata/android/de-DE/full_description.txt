@@ -1,0 +1,17 @@
+DT Mini Browser ist ein winziger Android-Browser ohne Abhängigkeiten, bei dem ein Server die schwere Arbeit übernimmt.
+
+Die App spricht mit deinem eigenen Rendering-Server (dt-mini-browser-server, siehe Projektseite). Der Server lädt Seiten in einem echten Chromium, inklusive JavaScript und CSS, und schickt eine kompakte Anzeigeliste zurück, die die App nur noch zeichnet.
+
+<b>Funktionen</b>
+• Schonend fürs Gerät: keine Web-Engine in der App, winzige APK
+• Läuft auf alten Handys (Android 4.1+)
+• Reines Java, kein AndroidX, kein Kotlin, keine Drittbibliotheken
+• Werbung und Tracker werden auf dem Server gefiltert
+• Tabs, Lesezeichen und Verlauf (lokal gespeichert)
+• Formulareingabe, Downloads über den Server, Zertifikatsinfo für HTTPS
+• Einrichtung per QR-Code oder eingefügtem Setup-Text
+• Kann als Standardbrowser gesetzt werden (http/https)
+• Sprachen: English, Deutsch, Español, Français, Italiano, Türkçe, Русский, 日本語, 简体中文
+
+<b>Hinweis</b>
+Den Server musst du zuerst selbst einrichten. Standardsuche ist DuckDuckGo. Unverschlüsselte http-Verbindungen zu deinem Server sind erlaubt, z. B. im Heimnetz. Beta-Software, es kann noch ruckeln.
