@@ -813,7 +813,7 @@ public class MainActivity extends Activity implements PageView.Listener {
                         // Offizielle ZXing Barcode Scanner App
                         Uri market = Uri.parse("market://details?id=com.google.zxing.client.android");
                         Uri web = Uri.parse(
-                                "https://play.google.com/store/apps/details?id=com.google.zxing.client.android");
+                                "https://github.com/zxing/zxing/releases/tag/BS-4.7.6");
                         try {
                             startActivity(new Intent(Intent.ACTION_VIEW, market));
                         } catch (ActivityNotFoundException ex) {
